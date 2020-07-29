@@ -1,0 +1,35 @@
+{
+    "manifest_version": 2,
+    "name": "_YFN_YMX_CRX_",
+    "description": "亚马逊插件",
+    "version": "1.0",
+    "permissions": [
+        "activeTab",
+        "webRequest",
+        "storage"
+    ],
+    "browser_action": {
+        "default_icon": "./img/icon.png",
+        "default_popup": "./src/views/popup.html"
+    },
+    "background": {
+        "scripts": [
+            "src/js/background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "css": [
+                "src/css/content.css"
+            ],
+            "js": [
+                "src/lib/jQuery/jquery-3.5.1.min.js",
+                "src/js/content_query.js"
+            ],
+            "run_at": "document_start"
+        }
+    ]
+}
