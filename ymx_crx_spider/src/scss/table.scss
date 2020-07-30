@@ -1,7 +1,8 @@
 #thlg_table_data_wrapper {
+
   #thlg_table_data_length select,
   #thlg_table_data_filter input {
-    height: calc(1.5em + 0.75rem + 2px);
+    height: calc(1.5em + 0.75rem);
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
     font-weight: 400;
@@ -13,20 +14,38 @@
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   }
-  table.dataTable > thead > tr > th {
-    // width: 90px !important;
-    // padding: 0;
+
+  table.dataTable {
+    border-collapse: collapse;
+    table-layout: auto;
+
+    th {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    td.dataTables_empty {
+      // 加载图标位置居左
+      text-align: left;
+
+    }
   }
 
   #thlg_table_data {
     border-collapse: collapse;
     table-layout: auto;
+
     tbody {
       tr.odd {
         background-color: rgb(249, 249, 249);
       }
+
       tr.even {
         background-color: white;
+      }
+      tr:hover{
+        background-color: rgb(204, 201, 201);
       }
       td {
         word-break: break-word;
