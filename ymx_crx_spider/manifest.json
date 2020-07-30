@@ -6,6 +6,7 @@
     "permissions": [
         "activeTab",
         "webRequest",
+        "webRequestBlocking",
         "storage"
     ],
     "browser_action": {
@@ -20,7 +21,21 @@
     "content_scripts": [
         {
             "matches": [
-                "<all_urls>"
+                "*://*.amazon.com/*",
+                "*://*.amazon.co.uk/*",
+                "*://*.amazon.co.jp/*",
+                "*://*.amazon.fr/*",
+                "*://*.amazon.it/*",
+                "*://*.amazon.es/*",
+                "*://*.amazon.de/*",
+                "*://*.amazon.ca/*",
+                "*://*.amazon.com.mx/*",
+                "*://*.amazon.com.br/*",
+                "*://*.amazon.cn/*",
+                "*://*.amazon.in/*",
+                "*://*.amazon.nl/*",
+                "*://*.amazon.tr/*",
+                "*://*.amazon.com.au/*"
             ],
             "css": [
                 "src/css/content.css"

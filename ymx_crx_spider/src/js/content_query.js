@@ -13,17 +13,20 @@ $.prototype.serializeObject = function () {
 };
 
 document.addEventListener("DOMContentLoaded", function () {
+  $("#twister").click(() => {
+    setTimeout(() => {
+      addRepertory();
+    }, 5000);
+  });
   addRepertory();
 });
-function addRepertory() {
+
+const addRepertory = () => {
   let tabUrl = window.location.href; // 当前页面URL
-  // 产品id
-  let productId = tabUrl.match(/(\/dp\/)\w*(\/)/)
-    ? tabUrl.match(/(\/dp\/)\w*(\/)/)[0].split("/")[2]
-    : tabUrl.match(/(\/product\/)\w*(\/)/)[0].split("/")[2];
   if ($("#addToCart")[0]) {
     // 当前页面是否存在 添加购物车按钮
     let data = $("#addToCart").serializeObject();
+    console.dir(data);
     data["quantity"] = 999;
     $.ajax({
       type: "post",
@@ -40,9 +43,8 @@ function addRepertory() {
           url: $(html).find("#hlb-view-cart-announce")[0].href,
           success: function (pagrhtml) {
             //   该款产品的库存数量/商家限购数量
-
             let sum = $(pagrhtml)
-              .find(`div[data-asin='${productId}']`)
+              .find(`div[data-asin='${data.ASIN}']`)
               .find(`input[name='quantityBox']`)
               .val();
             if ($(".thlg_sum_box").length > 0) {
@@ -53,6 +55,9 @@ function addRepertory() {
             剩余库存: <span id='repertory'>${sum}</span> 
              </div>
              `);
+              $(".thlg_btn").on("click", () => {
+                addRepertory();
+              });
             }
           },
           error: function (err) {
@@ -65,4 +70,4 @@ function addRepertory() {
       },
     });
   }
-}
+};

@@ -5,19 +5,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../lib/boootstrap//bootstrap.min.css">
+    <link rel="stylesheet" href="..\lib\jquery.cxdialog\jquery.cxdialog.css">
     <link rel="stylesheet" href="../css/popup.css">
 </head>
 
 <body>
 
-    <main class="main_wrap">
-
-
-
+    <main class="main_wrap ">
+        <form class="mx-auto my-5">
+            <div class="login_info_box">
+                <h3>登录</h3>
+                <div class="form-group">
+                    <label for="admin">账户:</label>
+                    <input type="text" class="form-control" id="login_admin" placeholder='请输入账号'>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码:</label>
+                    <input type="password" class="form-control" id="login_password" placeholder='请输入密码'>
+                </div>
+                <!-- <div class="form-group form-check lg_remember">
+                    <input type="checkbox" class="form-check-input" id="Check">
+                    <label class="form-check-label" for="Check">记住账号密码</label>
+                </div> -->
+            </div>
+            <div class="register_info_box">
+                <h3>注册</h3>
+                <div class="form-group">
+                    <label for="admin">手机:</label>
+                    <input type="text" class="form-control" id="register_admin" placeholder='请输入手机号'>
+                </div>
+                <div class="form-group">
+                    <label for="auth_code" class=" d-block ">验证码:</label>
+                    <input type="text" class="form-control col-7 d-inline-block" id="auth_code" placeholder='请输入验证码'>
+                    <button type="button" class="btn btn-success auth_code col-4">接收验证码</button>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码:</label>
+                    <input type="password" class="form-control" id="first_register_password" placeholder='请输入密码'>
+                </div>
+                <div class="form-group">
+                    <label for="password">再次输入密码:</label>
+                    <input type="password" class="form-control" id="last_register_password" placeholder='请输入密码'>
+                </div>
+            </div>
+            <button type="button" class="btn btn-success login col-5 ">登录</button>
+            <button type="button" class="btn btn-secondary register col-5 ml-2 ">注册</button>
+        </form>
     </main>
-
-
     <script src="../lib/jQuery/jquery-3.5.1.min.js"></script>
+    <script src="../lib\jQuery\jquery.tips.js"></script>
+    <script src="../lib\jquery.cxdialog\jquery.cxdialog.min.js"></script>
     <script src="../js/popup.js"></script>
 </body>
 
