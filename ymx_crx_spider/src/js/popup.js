@@ -1,16 +1,96 @@
-const data = {
-  auth_code: null,
-};
+// 弹窗统一配置
+$.cxDialog.defaults.baseClass = "ios";
+// 提示统一配置
 let tipsInfo = {
   side: 3,
   color: "#FFF",
   bg: "#FF00FF",
   time: "2",
 };
+/**
+ *  注册
+ *
+ * @param {obj} user
+ */
+function register(user) {
+  $.ajax({
+    type: "POST",
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    url: "url",
+    data: JSON.stringify(user),
+    success: function (response) {
+      console.log(response);
+      $.cxDialog({
+        title: "提示",
+        info: "您已注册成功！",
+      });
+    },
+    error: function (xhr, status, error) {
+      $.cxDialog({
+        title: "提示",
+        info: "注册失败！",
+      });
+      console.error(error);
+    },
+  });
+}
 
-$(location).attr("href", "../views/data_list.html");
-// 用于校验登录是否过期，直接跳转进去 否则 重新登录
-verifyLogin();
+/**
+ * 登录
+ *
+ * @param {obj} user
+ */
+function login(user) {
+  // 成功后即可登录
+  // 假登陆
+  $(".popup_animation").css("display", "block");
+  $.ajax({
+    type: "POST",
+    url: "http://192.168.1.146:5000/user/login",
+    data: { ...user },
+    dataType: "json",
+    success: function (response) {
+      console.log(response);
+      // 跳转页面
+      $(".popup_animation").css("display", "none");
+      $(location).attr("href", "../views/data_list.html");
+    },
+    error: function (xhr, status, error) {
+      let info = null;
+      switch (status) {
+        case "error":
+          info = "登录失败😅，请稍后重试。";
+          break;
+        case "timeout":
+          info = "请求超时😅，请稍后重试。";
+          break;
+        default:
+          info = "错误😅，请稍后重试。";
+          break;
+      }
+      $(".popup_animation").css("display", "none");
+      $.cxDialog({
+        title: "提示",
+        info,
+        okText: "✔",
+        ok: () => {},
+      });
+      console.error(error);
+    },
+  });
+}
+/**
+ * 验证是否需要登录
+ *
+ */
+function verifyLogin() {
+  console.log($.cookie("token"));
+  if (!!$.cookie("token")) {
+    $(location).attr("href", "../views/data_list.html");
+  }
+}
+
 // 登录按钮
 $('button[type="button"].login').on("click", () => {
   // 切换表单
@@ -21,19 +101,26 @@ $('button[type="button"].login').on("click", () => {
     username: $("#login_admin").val().trim(),
     passwd: $("#login_password").val().trim(),
   };
-
   if (login_user.username == "") {
     $("#login_admin").tips({ ...tipsInfo, msg: "请填写账号" });
   } else if (login_user.passwd == "") {
     $("#login_password").tips({ ...tipsInfo, msg: "请填写密码" });
   } else {
-    login(uslogin_userer);
+    // login(login_user);
+
+    /********************************* 测试区 ******************************* */
+    // 跳转至页面
+    $.cookie("token", "15645465456", {
+      expires: 1,
+      path: "/",
+    });
+    $(location).attr("href", "../views/data_list.html");
+    /******************************************************************** */
   }
 });
 
 // 注册按钮
 $('button[type="button"].register').on("click", () => {
-  // 注册逻辑
   // 切换表单
   $(".login_info_box").css("display", "none");
   $(".register_info_box").css("display", "block");
@@ -83,7 +170,6 @@ $('button[type="button"].auth_code').on("click", () => {
       }
       ss--;
     }, 1000);
-
     $.ajax({
       type: "POST",
       url: "https://easydoc.xyz/mock/HE7cbkeQ/p/60916792/gVfJpOJw",
@@ -91,92 +177,16 @@ $('button[type="button"].auth_code').on("click", () => {
       dataType: "json",
       success: function (response) {
         if (response.code == 200) {
-          data.auth_code = response.data.code;
           console.log(data);
         } else {
           console.log("err");
         }
       },
+      error: function (xhr, status, error) {},
     });
   }
 });
 
-// $.cxDialog({
-//   title: "提示",
-//   info: "你好，",
-// });
-
-//    $("#Check")[0].checked,
-/**
- * 登录
- *
- * @param {obj} user
- */
-function login(user) {
-  // 成功后即可登录
-  // 假登陆
-  verifyLogin();
-  $.ajax({
-    type: "POST",
-    url: "http://192.168.1.146:5000/user/login",
-    data: JSON.stringify(user),
-    dataType: "json",
-    success: function (response) {
-      console.log(response);
-      chrome.storage.sync.set(
-        { user_login_info: "***登录信息**" },
-        function () {
-          // 通知保存完成。
-          console.log("设置已保存");
-        }
-      );
-      // 跳转页面
-      $(location).attr("href", "../views/data_list.html");
-    },
-    error: function (err) {
-      console.error(err);
-    },
-  });
-}
-/**
- *  注册
- *
- * @param {obj} user
- */
-function register(user) {
-  $.ajax({
-    type: "POST",
-    contentType: "application/json; charset=utf-8",
-    dataType: "json",
-    url: "url",
-    data: JSON.stringify(user),
-    success: function (response) {
-      console.log(response);
-      $.cxDialog({
-        title: "提示",
-        info: "您已注册成功！",
-      });
-    },
-    error: function (err) {
-      $.cxDialog({
-        title: "提示",
-        info: "注册失败！",
-      });
-      console.error(err);
-    },
-  });
-}
-// chrome.storage.sync.set({ value: "theValue",value1:'1' }, function () {
-//   // 通知保存完成。
-//   console.log("设置已保存");
-// });
-function verifyLogin() {
-  chrome.storage.sync.get("user_login_info", function (user_login_info) {
-    if (user_login_info.token) {
-      $(location).attr("href", "../views/data_list.html");
-      console.log("已校验");
-    } else {
-      console.log("请登录");
-    }
-  });
-}
+// 用于校验登录是否过期，直接跳转进去 否则 重新登录
+verifyLogin();
+// $("#Check")[0].checked,

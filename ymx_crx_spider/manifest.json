@@ -1,29 +1,31 @@
 {
     "manifest_version": 2,
     "name": "_YFN_YMX_CRX_",
-    "description": "亚马逊插件",
     "version": "1.0",
-    "permissions": [
-        "activeTab",
-        "webRequest",
-        "webRequestBlocking",
-        "storage",
-        "declarativeContent"
-    ],
-    "page_action": {
-        "default_icon": "img/icon.png",
-        "default_popup": "src/views/popup.html"
-    },
+    "description": "一款无与伦比的亚马逊库存查询",
     "icons": {
         "16": "img/icon.png",
         "48": "img/icon.png",
         "128": "img/icon.png"
     },
+    "page_action": {
+        "default_icon": "img/icon.png",
+        "default_title": "亚马逊库存查询", 
+        "default_popup": "src/views/popup.html"
+    },
+    "author": "THLG",
     "background": {
         "scripts": [
             "src/js/background.js"
         ]
     },
+    "permissions": [
+        "activeTab",
+        "declarativeContent",
+        "webRequest",
+        "webRequestBlocking",
+        "storage"
+    ],
     "content_scripts": [
         {
             "matches": [

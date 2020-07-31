@@ -1,3 +1,4 @@
+// 表单 JSON 化
 $.prototype.serializeObject = function () {
   var a, o, h, i, e;
   a = this.serializeArray();
@@ -11,22 +12,38 @@ $.prototype.serializeObject = function () {
   }
   return o;
 };
-
-document.addEventListener("DOMContentLoaded", function () {
-  $("#twister").click(() => {
-    setTimeout(() => {
-      addRepertory();
-    }, 5000);
-  });
-  addRepertory();
+let tabUrl = $(location)[0].href, // 当前产品 页面URL
+  stock = null; // 库存
+// 通信 回复消息
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  switch (request.type) {
+    case "PRODUCTASIN":
+      sendResponse({
+        type: "ok",
+        info: {
+          asin: $("#ASIN").val(),
+          url: tabUrl,
+          stock,
+        },
+      });
+      break;
+    default:
+      sendResponse({
+        type: "error",
+        info: "请选择正确的类型",
+      });
+      break;
+  }
 });
-
-const addRepertory = () => {
-  let tabUrl = window.location.href; // 当前页面URL
+/**
+ * 添加库存
+ *
+ */
+function addRepertory() {
   if ($("#addToCart")[0]) {
     // 当前页面是否存在 添加购物车按钮
     let data = $("#addToCart").serializeObject();
-    console.dir(data);
+    // console.dir(data);
     data["quantity"] = 999;
     $.ajax({
       type: "post",
@@ -43,22 +60,20 @@ const addRepertory = () => {
           url: $(html).find("#hlb-view-cart-announce")[0].href,
           success: function (pagrhtml) {
             //   该款产品的库存数量/商家限购数量
-            let sum = $(pagrhtml)
+            stock = $(pagrhtml)
               .find(`div[data-asin='${data.ASIN}']`)
               .find(`input[name='quantityBox']`)
               .val();
             if ($(".thlg_sum_box").length > 0) {
-              $(".thlg_sum_box #repertory").text(sum);
+              $(".thlg_sum_box #repertory").text(stock);
             } else {
-              $("#quantity").parent().after(`
+              $("form #availability").after(`
              <div class='thlg_sum_box' title='剩余库存/商家限购数量'>
-            剩余库存: <span id='repertory'>${sum}</span> 
+            剩余库存: <span id='repertory'>${stock}</span>
              </div>
              `);
-              $(".thlg_btn").on("click", () => {
-                addRepertory();
-              });
             }
+            console.log(`库存：${stock}`);
           },
           error: function (err) {
             console.log(err);
@@ -70,4 +85,17 @@ const addRepertory = () => {
       },
     });
   }
-};
+}
+
+// 页面加载完 执行
+document.addEventListener("DOMContentLoaded", function () {
+  $("#twister li").click(function () {
+    if ($(this)[0].dataset.dpUrl !== "") {
+      tabUrl = `${$(location)[0].origin}${$(this)[0].dataset.dpUrl}`;
+    }
+    setTimeout(() => {
+      addRepertory();
+    }, 5000);
+  });
+  addRepertory();
+});

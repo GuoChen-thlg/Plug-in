@@ -1,25 +1,21 @@
 .main_wrap {
   width: 780px;
+  min-height: 300px;
 }
-
-.main_wrap form {
-  width: 100%;
+.main_wrap form.form {
+  width: 500px;
 }
-
 .register_info_box {
   display: none;
 }
 
-#thlg_table_data {}
-
 .data_list * {
   font-size: 12px;
 }
-
+/* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
-  /*background-color: #ddd;*/
 }
 /*滑块*/
 ::-webkit-scrollbar-thumb {
@@ -33,4 +29,18 @@
 ::-webkit-scrollbar-track {
   box-shadow: inset 0 0 6px #333;
   border-radius: 10px;
+}
+.popup_animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #6c757d4d;
+  display: none;
+}
+.popup_animation .spinner-border {
+  position: absolute;
+  top: calc(50% - 16px);
+  left: calc(50% - 16px);
 }
