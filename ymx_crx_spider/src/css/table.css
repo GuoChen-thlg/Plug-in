@@ -1,7 +1,5 @@
 #thlg_table_data_wrapper #thlg_table_data_length select,
 #thlg_table_data_wrapper #thlg_table_data_filter input {
-  height: calc(1.5em + 0.75rem);
-  padding: 0.375rem 0.75rem;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;

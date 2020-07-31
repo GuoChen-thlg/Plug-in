@@ -10,7 +10,7 @@
     },
     "page_action": {
         "default_icon": "img/icon.png",
-        "default_title": "亚马逊库存查询", 
+        "default_title": "亚马逊库存查询扩展", 
         "default_popup": "src/views/popup.html"
     },
     "author": "THLG",

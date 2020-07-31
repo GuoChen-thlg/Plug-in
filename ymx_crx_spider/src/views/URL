@@ -1,0 +1,20 @@
+hasMoreItems: 0
+timeStamp: 1596203244
+token: gN/1DLDV7+N5aPfWuf0GBdnxmPsgM01rUmCE6DQAAAAMAAAAAF8kIOxyYXcAAAAA
+requestID: GX8ZZXW5B387YZPSVGK7
+addressId: 
+addressZip: 
+closeAddonUpsell: 1
+submit.cart-actions: 1
+pageAction: cart-actions
+actionPayload: [{"type":"DELETE_START","payload":{"itemId":"C7d35f4f1-647b-44e7-8a75-6dd3d8021d4d","list":"activeItems","relatedItemIds":[],"numberOfItemsRemoved":1000,"isPrimeAsin":0}}]
+displayedSavedItemNum: 0
+
+
+activePage: "0"
+anti-csrftoken-a2z: "gz5EUp97W82JsWH3nEtNEu2omZ0m8msOaDyln7RQPsr4AAAAAQAAAABfJCDWcmF3AAAAAHIvVkCfa6o/iZ8T3F+olA=="
+fromAUI: "1"
+quantityBox: "1000"
+requestID: "HPY32APDYNVEHDEY57SP"
+timeStamp: "1596203222"
+token: "gKPWuYsdBbyk2OkfjqE7QZVRQyeWDYjjvXKTVVIAAAAMAAAAAF8kINZyYXcAAAAA"

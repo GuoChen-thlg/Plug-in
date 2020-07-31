@@ -13,7 +13,7 @@ $.prototype.serializeObject = function () {
   return o;
 };
 let tabUrl = $(location)[0].href, // 当前产品 页面URL
-  stock = null; // 库存
+  stock = ''; // 库存
 // 通信 回复消息
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   switch (request.type) {
@@ -23,7 +23,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         info: {
           asin: $("#ASIN").val(),
           url: tabUrl,
-          stock,
         },
       });
       break;
@@ -39,7 +38,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
  * 添加库存
  *
  */
-function addRepertory() {
+function addRepertory () {
   if ($("#addToCart")[0]) {
     // 当前页面是否存在 添加购物车按钮
     let data = $("#addToCart").serializeObject();
@@ -74,6 +73,10 @@ function addRepertory() {
              `);
             }
             console.log(`库存：${stock}`);
+
+            // TODO 购物车中删除商品   #activeCartViewForm
+            // let formdata = $(pagrhtml).find("#activeCartViewForm").serializeObject()
+            // console.log(formdata);
           },
           error: function (err) {
             console.log(err);

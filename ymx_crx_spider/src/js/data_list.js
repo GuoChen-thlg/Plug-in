@@ -4,10 +4,14 @@
  * @param {obj} message
  * @param {function(obj)} callback
  */
-function SendMessageToContent(message, callback) {
+function SendMessageToContent (message, callback, error) {
   chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
     chrome.tabs.sendMessage(tabs[0].id, message, function (response) {
-      if (callback) callback(response);
+      if (chrome.runtime.lastError) {
+        error(chrome.runtime.lastError);
+      } else {
+        if (callback) callback(response);
+      }
     });
   });
 }
@@ -16,7 +20,7 @@ function SendMessageToContent(message, callback) {
  * 渲染表单
  *
  */
-function renderTable() {
+function renderTable () {
   // 语言配置
   const zh_ch = {
     sProcessing: `<div class="spinner-border spinner-border-sm mr-2" role="status"> <span class="sr-only">Loading...</span> </div>处理中...`,
@@ -110,28 +114,51 @@ $('button[type="button"].quit').on("click", () => {
       $.removeCookie("token", { path: "/" })
         ? $(location).attr("href", "../views/popup.html")
         : $.cxDialog({
-            title: "提示",
-            info: "确认退出该账号吗❓",
-            okText: "✔",
-            ok: function () {},
-          });
+          title: "提示",
+          info: "确认退出该账号吗❓",
+          okText: "✔",
+          ok: function () { },
+        });
     },
     noText: "❌",
-    no: () => {},
+    no: () => { },
   });
 });
 
-SendMessageToContent({ type: "PRODUCTASIN" }, (writeBack) => {
-  if (writeBack) {
-    console.log(writeBack.info);
-    // $("#stock").text(writeBack.info.stock);
-    renderTable();
-  } else {
+SendMessageToContent({ type: "PRODUCTASIN" },
+  (writeBack) => {
+    console.log(writeBack);
+    if (writeBack.type || 'ok' == writeBack.type) {
+      console.log(writeBack.info);
+      if (writeBack.info.asin && '' !== writeBack.info.asin) {
+        renderTable();
+      } else {
+        $("#stock").text(writeBack.info.stock);
+        $.cxDialog({
+          title: "提示",
+          info: "请到产品详情页面",
+          okText: "✔",
+          ok: function () {
+            $('.popup_animation').css('display', 'block')
+          },
+        });
+      }
+    }
+    else {
+      $.cxDialog({
+        title: "提示",
+        info: "请在产品详情页打开",
+        okText: "✔",
+        ok: function () { },
+      });
+    }
+  }, (error) => {
+    // 无法建立连接
     $.cxDialog({
       title: "提示",
-      info: "请刷新页面重试",
+      info: "请刷新页面后,重新打开",
       okText: "✔",
-      ok: function () {},
+      ok: function () { },
     });
-  }
-});
+    console.warn(error.message);
+  });
