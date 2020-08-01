@@ -13,7 +13,7 @@ $.prototype.serializeObject = function () {
   return o;
 };
 let tabUrl = $(location)[0].href, // 当前产品 页面URL
-  stock = ''; // 库存
+  stock = ""; // 库存
 // 通信 回复消息
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   switch (request.type) {
@@ -38,7 +38,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
  * 添加库存
  *
  */
-function addRepertory () {
+function addRepertory() {
   if ($("#addToCart")[0]) {
     // 当前页面是否存在 添加购物车按钮
     let data = $("#addToCart").serializeObject();
@@ -66,7 +66,7 @@ function addRepertory () {
             if ($(".thlg_sum_box").length > 0) {
               $(".thlg_sum_box #repertory").text(stock);
             } else {
-              $("form #availability").after(`
+              $("#availability").after(`
              <div class='thlg_sum_box' title='剩余库存/商家限购数量'>
             剩余库存: <span id='repertory'>${stock}</span>
              </div>

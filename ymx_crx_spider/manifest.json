@@ -2,7 +2,7 @@
     "manifest_version": 2,
     "name": "_YFN_YMX_CRX_",
     "version": "1.0",
-    "description": "一款无与伦比的亚马逊库存查询",
+    "description": "一款无与伦比的亚马逊库存查询扩展",
     "icons": {
         "16": "img/icon.png",
         "48": "img/icon.png",
@@ -10,7 +10,7 @@
     },
     "page_action": {
         "default_icon": "img/icon.png",
-        "default_title": "亚马逊库存查询扩展", 
+        "default_title": "亚马逊库存查询",
         "default_popup": "src/views/popup.html"
     },
     "author": "THLG",
@@ -30,20 +30,24 @@
         {
             "matches": [
                 "*://*.amazon.com/*",
+                "*://*.amazon.com.tr/*",
                 "*://*.amazon.co.uk/*",
                 "*://*.amazon.co.jp/*",
                 "*://*.amazon.fr/*",
+                "*://*.amazon.sg/*",
                 "*://*.amazon.it/*",
                 "*://*.amazon.es/*",
                 "*://*.amazon.de/*",
                 "*://*.amazon.ca/*",
+                "*://*.amazon.sa/*",
                 "*://*.amazon.com.mx/*",
                 "*://*.amazon.com.br/*",
                 "*://*.amazon.cn/*",
                 "*://*.amazon.in/*",
                 "*://*.amazon.nl/*",
                 "*://*.amazon.tr/*",
-                "*://*.amazon.com.au/*"
+                "*://*.amazon.com.au/*",
+                "*://*.amazon.ae/*"
             ],
             "css": [
                 "src/css/content.css"

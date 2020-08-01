@@ -1,59 +1,50 @@
-#thlg_table_data_wrapper {
+#thlg_table_data_length select,
+#thlg_table_data_filter input {
+  // height: calc(1.5em + 0.75rem);
+  // padding: 0.375rem 0.15rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
 
-  #thlg_table_data_length select,
-  #thlg_table_data_filter input {
-    // height: calc(1.5em + 0.75rem);
-    // padding: 0.375rem 0.15rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: 0.25rem;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+table.dataTable {
+  border-collapse: collapse;
+  table-layout: auto;
+
+  th {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
-  table.dataTable {
-    border-collapse: collapse;
-    table-layout: auto;
-
-    th {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    td.dataTables_empty {
-      // 加载图标位置居左|默认居中
-      text-align: left;
-
-    }
+  td.dataTables_empty {
+    // 加载图标位置居左|默认居中
+    text-align: left;
   }
+}
 
-  #thlg_table_data {
-    border-collapse: collapse;
-    table-layout: auto;
-
-    tbody {
-      tr.odd {
-        background-color: rgb(249, 249, 249);
-      }
-
-      tr.even {
-        background-color: white;
-      }
-
-      tr:hover {
-        background-color: rgb(204, 201, 201);
-      }
-
-      td {
-        word-break: break-word;
-        max-width: 90px;
-        padding: 4px 10px;
-      }
+#thlg_table_data {
+  border-collapse: collapse;
+  table-layout: auto;
+}
+table.dataTable {
+  tbody {
+    tr.odd {
+      background-color: #f9f9f9;
+    }
+    tr.even {
+      background-color: #ffffff;
+    }
+    td {
+      word-break: break-word;
+      max-width: 90px;
+      padding: 4px 10px;
     }
   }
 }
