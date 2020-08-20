@@ -2,13 +2,16 @@
   width: 780px;
   min-height: 300px;
 }
-.main_wrap form.form {
+.login_info_box,
+.wx_login_box {
   width: 500px;
 }
-.register_info_box {
+.wx_login_box {
   display: none;
 }
-
+.close {
+  right: 0;
+}
 .data_list * {
   font-size: 12px;
 }
@@ -43,4 +46,11 @@
   position: absolute;
   top: calc(50% - 16px);
   left: calc(50% - 16px);
+}
+ul,
+ol,
+li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }

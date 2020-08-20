@@ -1,17 +1,17 @@
 // 表单 JSON 化
-$.prototype.serializeObject = function () {
-  var a, o, h, i, e;
-  a = this.serializeArray();
-  o = {};
-  h = o.hasOwnProperty;
-  for (i = 0; i < a.length; i++) {
-    e = a[i];
-    if (!h.call(o, e.name)) {
-      o[e.name] = e.value;
-    }
-  }
-  return o;
-};
+// $.prototype.serializeObject = function () {
+//   var a, o, h, i, e;
+//   a = this.serializeArray();
+//   o = {};
+//   h = o.hasOwnProperty;
+//   for (i = 0; i < a.length; i++) {
+//     e = a[i];
+//     if (!h.call(o, e.name)) {
+//       o[e.name] = e.value;
+//     }
+//   }
+//   return o;
+// };
 let tabUrl = $(location)[0].href, // 当前产品 页面URL
   stock = ""; // 库存
 // 通信 回复消息
@@ -96,9 +96,9 @@ document.addEventListener("DOMContentLoaded", function () {
     if ($(this)[0].dataset.dpUrl !== "") {
       tabUrl = `${$(location)[0].origin}${$(this)[0].dataset.dpUrl}`;
     }
-    setTimeout(() => {
-      addRepertory();
-    }, 5000);
+    // setTimeout(() => {
+      // addRepertory();
+    // }, 5000);
   });
-  addRepertory();
+  // addRepertory();
 });

@@ -22,6 +22,8 @@
     "permissions": [
         "activeTab",
         "declarativeContent",
+        "cookies",
+        "*://*.amazon.com/*",
         "webRequest",
         "webRequestBlocking",
         "storage"
