@@ -27,8 +27,8 @@
 				t.c_height = 0
 			}
 			t.t.css({
-				'max-height': t.w_height - t.c_height,
-				'max-width': t.w_width - t.c_width,
+				'max-height': '100%', // t.w_height - t.c_height,
+				'max-width': '100%', //t.w_width - t.c_width,
 				position: 'fixed',
 			})
 			$(window).resize(function () {
@@ -48,8 +48,8 @@
 					t.t.height(t.w_height - t.c_height)
 				}
 				t.t.css({
-					'max-height': t.w_height - t.c_height,
-					'max-width': t.w_width - t.c_width,
+					'max-height': '100%', //t.w_height - t.c_height,
+					'max-width': '100%', // t.w_width - t.c_width,
 				})
 				t.height = t.t.outerHeight()
 				t.width = t.t.outerWidth()
@@ -63,14 +63,14 @@
 						t.t.css('left', t.left)
 					}
 				}
-				if (t.height + t.top >= t.w_height) {
-					t.top = t.w_height - t.height
-					if (parseInt(t.t.css('top')) < 0) {
-						t.t.css('top', -t.height + t.hide)
-					} else {
-						t.t.css('top', t.top)
-					}
-				}
+				// if (t.height + t.top >= t.w_height) {
+				// 	t.top = t.w_height - t.height
+				// 	if (parseInt(t.t.css('top')) < 0) {
+				// 		t.t.css('top', -t.height + t.hide)
+				// 	} else {
+				// 		t.t.css('top', t.top)
+				// 	}
+				// }
 			})
 			t.move()
 			t.size()
@@ -80,9 +80,9 @@
 			t.cs.on('mousedown', function () {
 				t.top = 0
 				t.left = 0
-				// t.t.animate({ top: 0, left: 0 }, 300, function () {
-				// 	t.top_animate()
-				// })
+				t.t.animate({ top: 0, left: 0 }, 300, function () {
+					t.top_animate()
+				})
 				return false
 			})
 			t.c.on('mousedown', function (e) {
@@ -140,7 +140,7 @@
 		},
 		size: function () {
 			var t = this
-			t.t.append('<span class="bg_change_size">&nbsp;</span>')
+			t.t.append('<span class="bg_change_size">◢</span>')
 			t.sz = t.t.find('.bg_change_size').first()
 			t.sz.css({
 				position: 'absolute',

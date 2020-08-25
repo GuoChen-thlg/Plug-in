@@ -20,10 +20,6 @@
     "permissions": [
         "activeTab",
         "declarativeContent",
-        "cookies",
-        "*://*.amazon.com/*",
-        "webRequest",
-        "webRequestBlocking",
         "storage",
         "notifications"
     ],
@@ -52,18 +48,19 @@
             ],
             "css": [
                 "src/lib/boootstrap//bootstrap.min.css",
-                "src/lib/data tables/css/jquery.dataTables.min.css",
-                "src/lib/data tables/css/datatables.min.css",
+                "src/lib/data_tables/css/jquery.dataTables.min.css",
+                "src/lib/data_tables/css/datatables.min.css",
                 "src/lib/jquery.cxdialog/jquery.cxdialog.css",
                 "src/css/style.min.css"
             ],
             "js": [
                 "src/lib/jQuery/jquery-3.5.1.min.js",
-                "src/lib/data tables/js/datatables.min.js",
+                "src/lib/data_tables/js/datatables.min.js",
                 "src/lib/jquery.cxdialog/jquery.cxdialog.min.js",
-                "src/lib/jQuery/jquery.cookie.js",
-                "src/lib/jQuery/jquery.tips.js",
-                "src/lib/jQuery/drag.js",
+                "src/lib/jQuery/jquery.cookie.min.js",
+                "src/lib/jQuery/jquery.tips.min.js",
+                "src/lib/jQuery/drag.min.js",
+                "src/lib/wx/wxLogin.js",
                 "src/js/main.js"
             ],
             "run_at": "document_start"

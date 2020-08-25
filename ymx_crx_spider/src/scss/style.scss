@@ -18,12 +18,13 @@
 }
 .popup_animation {
 	position: absolute;
-	top: 0;
+	top: 20px;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	background-color: rgba($color: #000000, $alpha: 0.3);
 	display: none;
+	z-index: 945;
 }
 .popup_animation .spinner-border {
 	position: absolute;
@@ -50,7 +51,13 @@ li {
 	border-radius: 0.25rem;
 	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
-// .omit
+.omit {
+	display: block;
+	width: 100px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
 table.dataTable {
 	border-collapse: collapse;
 	table-layout: auto;
@@ -66,7 +73,27 @@ table.dataTable {
 		text-align: left;
 	}
 }
-
+#thlg_table_data_wrapper {
+	height: calc(100% - 80px);
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	padding: 0 10px;
+	.DTFC_ScrollWrapper {
+		height: calc(100% - 115px);
+	}
+	.dtfc_scrollwrapper {
+		height: 100%;
+	}
+	.dataTables_scroll {
+		height: calc(100% - 90px);
+		& > div.dataTables_scrollBody {
+			height: calc(100% - 70px) !important;
+			max-height: calc(100% - 70px) !important;
+		}
+	}
+}
 #thlg_table_data {
 	border-collapse: collapse;
 	table-layout: auto;
@@ -84,6 +111,9 @@ table.dataTable {
 			max-width: 90px;
 			padding: 4px 10px;
 			cursor: pointer;
+			.product_watch {
+				margin: auto;
+			}
 		}
 	}
 	.product_img {
@@ -117,19 +147,22 @@ main.main_wrap.data_list {
 	background-color: #f9f9f9;
 	min-width: 650px;
 	min-height: 300px;
-	width: 600px;
+	width: 800px;
+	height: 500px;
 	left: 15%;
 	top: 25%;
 	right: 1px;
+	// overflow: auto;
 	.title {
 		width: 100%;
 		height: 20px;
 		background-color: #232f3e;
 		color: #f9f9f9;
 		padding: 0 10px;
+		cursor: move;
 	}
 	.full-screen-box,
-	.close {
+	._close {
 		position: absolute;
 		top: 0;
 		right: 0;
@@ -153,13 +186,17 @@ main.main_wrap.data_list {
 		}
 	}
 	.bg_change_size {
-		background-color: #333;
+		font-size: 22px !important;
+		text-align: right;
+		position: fixed;
 	}
 	.main_wrap.login_outer_box {
 		display: block;
+		height: 100%;
 	}
 	.main_wrap.data_show_box {
 		display: none;
+		height: 100%;
 		.pagination li {
 			list-style: none;
 		}
