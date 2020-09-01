@@ -119,6 +119,12 @@ table.dataTable {
 	.product_img {
 		width: 50px;
 	}
+	.multiterm {
+		display: block;
+	}
+	.single {
+		display: none;
+	}
 }
 main.main_wrap.data_list {
 	/* 滚动条样式 */
@@ -145,7 +151,7 @@ main.main_wrap.data_list {
 	position: absolute;
 	z-index: 9999;
 	background-color: #f9f9f9;
-	min-width: 650px;
+	min-width: 680px;
 	min-height: 300px;
 	width: 800px;
 	height: 500px;

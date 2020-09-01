@@ -3,27 +3,6 @@ const API_URL = ' https://192.168.1.153:443/dev-api'
 // 弹窗统一配置
 $.cxDialog.defaults.baseClass = 'ios'
 $.cxDialog.defaults.lockScroll = true
-/**
- * 日志打印
- * @param  {...any} data
- */
-$.extend({
-	log: function (...data) {
-		console.log(...data)
-	},
-	hint: function (info, ss = 500) {
-		$.cxDialog(info)
-		$('.cxdialog_info').css({
-			'background-color': 'rgba(0,0,0,.6)',
-			padding: ' 10px',
-			margin: ' 0',
-			color: ' #fff',
-		})
-		setTimeout(() => {
-			$.cxDialog.close()
-		}, ss)
-	},
-})
 
 // 提示统一配置
 let tipsInfo = {
@@ -52,7 +31,9 @@ function findAllAsin() {
 	document.querySelectorAll('div[data-a-carousel-options]').forEach(o => {
 		if (JSON.parse(o.dataset.aCarouselOptions).ajax) {
 			let arr = JSON.parse(o.dataset.aCarouselOptions).ajax.id_list
-			ajax_asin_list = [...ajax_asin_list, ...arr]
+			if (arr && arr.length > 0) {
+				ajax_asin_list = [...ajax_asin_list, ...arr]
+			}
 		}
 	})
 	ajax_asin_list = ajax_asin_list.map(o => o.substr(0, 10))
@@ -94,15 +75,32 @@ function renderTable(asinlist) {
 	// 表头 数据 配置
 	const columns = [
 		{
-			title: '是否追踪',
+			title: `<div class="custom-control custom-switch">
+			<input type="checkbox" class="custom-control-input"style="display:none" checked id="customSwitch1">
+			<label class="custom-control-label" for="customSwitch1">
+			<span class="multiterm" title="勾选表示要追踪的商品,已勾选表示已追踪的商品" >多项追踪</span>
+			<span class="single" title="追踪单个商品,已勾选表示已追踪的商品,可取消追踪" >单项追踪</span>
+			</label>
+		  </div>`,
 			data: 'asin',
 			orderable: false,
 			render: (data, type, row) => {
-				return `<input type="checkbox" data-asin=${data} ${
+				return `<input type="checkbox" data-multiterm data-asin=${data} ${
 					false ? 'checked' : ''
-				} class=" product_watch d-block mx-auto">`
+				} class=" multiterm product_watch  mx-auto">
+				<input type="checkbox" data-single data-asin=${data} ${
+					false ? 'checked' : ''
+				} class=" single product_watch  mx-auto">`
 			},
 		},
+		// {
+		// 	title: '单项追踪',
+		// 	data: 'asin',
+		// 	orderable: false,
+		// 	render: (data, type, row) => {
+		// 		return `<input type="checkbox" data-single data-asin=${data} ${ false ? 'checked' : '' } class=" product_watch d-block mx-auto">`
+		// 	},
+		// },
 		{
 			title: '产品SKU',
 			data: 'asin',
@@ -172,12 +170,21 @@ function renderTable(asinlist) {
 		colReorder: true, // 移动列
 		fixedHeader: true, // 固定头
 		fixedColumns: false, // 固定列
+		deferRender: true, // 当处理大数据时，延迟渲染数据，有效提高Datatables处理能力
+		serverSide: false, // 控制服务端分页
+		paging: true, // 开启本地分页
+		searching: true, // 本地搜索
 		lengthMenu: [
 			[10, 50, 100, 500, -1],
 			[10, 50, 100, 500, 'All'],
 		], // 分页
 		dom: "<'d-inline-block px-2'>Blfrtip", // 控件出现的顺序
 		buttons: [
+			{
+				extend: 'trace',
+				text: '追踪已勾选',
+				className: ' btn-warning btn-trace',
+			},
 			{ extend: 'copy', text: '📋COPY' },
 			{
 				extend: 'excel',
@@ -261,48 +268,124 @@ function renderTable(asinlist) {
 				orderable: false, //是否排序
 			},
 		],
-		ajax: {
-			// ajax 读取数据
-			type: 'GET',
-			url: `${API_URL}/custom/user/amzproductList/${asinlist.toString()}`,
-			headers: {
-				'Content-Type': 'application/json; charset=utf-8',
+		data: [
+			{
+				asin: 'S546SADADA',
 			},
-			dataSrc: 'amzProducts',
-			error: function (XMLHttpRequest, errorinfo, error) {
-				$.cxDialog({
-					title: '提示',
-					info: '该款产品数据维护中...',
-					okText: '✔',
-					ok: () => {
-						close()
-					},
-				})
+			{
+				asin: 'dasdsa554as',
 			},
-		},
+			{
+				asin: 'asdads45s4a',
+			},
+		],
+		// ajax: {
+		// 	// ajax 读取数据
+		// 	type: 'GET',
+		// 	url: `${API_URL}/custom/user/amzproductList/${asinlist.toString()}`,
+		// 	headers: {
+		// 		'Content-Type': 'application/json; charset=utf-8',
+		// 	},
+		// 	dataSrc: 'rows',
+		// 	data: {
+		// 		// 分页使用
+		// 		// pageNum: '',
+		// 		// pageSize:''
+		// 	},
+		// 	error: function (XMLHttpRequest, errorinfo, error) {
+		// 		$.cxDialog({
+		// 			title: '提示',
+		// 			info: '该款产品数据维护中...',
+		// 			okText: '✔',
+		// 			ok: () => {
+		// 				close()
+		// 			},
+		// 		})
+		// 	},
+		// },
 		columns, // 表头
 		initComplete: function () {
+			// 切换事件绑定
+			$('#customSwitch1').on('click', function () {
+				console.log(this.checked)
+				if (this.checked) {
+					$('button.btn-trace').removeAttr('disabled')
+					$('.multiterm').css('display', 'block')
+					$('.single').css('display', 'none')
+				} else {
+					$('button.btn-trace').attr('disabled', 'disabled')
+					$('.multiterm').css('display', 'none')
+					$('.single').css('display', 'block')
+				}
+			})
 			//初始化完成  绑定 点击事件 追踪产品
-			$('input:checkbox').click(function (e) {
+			$('input:checkbox[data-single]').click(function (e) {
 				// e.preventDefault()
 				let data = {
 					checked: this.checked,
 					asin: this.attributes['data-asin'].value,
 				}
-				console.log(data)
-				// ajax watch product
+				let _this = this
+				$.log(data)
 				$('.popup_animation').css('display', 'block')
-				$.hint('已加入追踪列表')
-				setTimeout(() => {
-					$('.popup_animation').css('display', 'none')
-				}, 3000)
 				if (data.checked) {
+					$.ajax({
+						type: 'GET',
+						url: `${API_URL}/custom/user/addtrack?u_name=${$.cookie(
+							'token'
+						)}&asin=${data.asin}`,
+						headers: {
+							'Content-Type': 'application/json; charset=utf-8',
+						},
+						success: function (response) {
+							$.log(response)
+							if (response.status === 'success') {
+								$('.popup_animation').css('display', 'none')
+								$.hint('跟踪成功')
+							} else {
+								$(_this).prop('checked', false)
+								$('.popup_animation').css('display', 'none')
+								$.hint('跟踪失败')
+							}
+						},
+						error: function (xhr, status, error) {
+							$.log(status)
+							$(_this).prop('checked', false)
+							$('.popup_animation').css('display', 'none')
+							$.hint('跟踪失败')
+						},
+					})
 				} else {
+					$.ajax({
+						type: 'GET',
+						url: `${API_URL}/custom/user/addtrack?u_name=${$.cookie(
+							'token'
+						)}&asin=${data.asin}`,
+						headers: {
+							'Content-Type': 'application/json; charset=utf-8',
+						},
+						success: function (response) {
+							$.log(response)
+							if (response.status === 'success') {
+								$('.popup_animation').css('display', 'none')
+								$.hint('取消成功')
+							} else {
+								$(_this).prop('checked', true)
+								$('.popup_animation').css('display', 'none')
+								$.hint('取消失败')
+							}
+						},
+						error: function (xhr, status, error) {
+							$.log(status)
+							$(_this).prop('checked', true)
+							$('.popup_animation').css('display', 'none')
+							$.hint('取消失败')
+						},
+					})
 				}
 			})
 		},
 	})
-	$.log(table)
 	table.on('xhr', function (e, settings, json) {
 		table.off('xhr') //关闭监听该事件
 		$.log(json)
@@ -411,7 +494,6 @@ function eventBinding() {
  */
 function login(user) {
 	// 成功后即可登录
-	// 假登陆
 	$('.popup_animation').css('display', 'block')
 	$.ajax({
 		type: 'POST',
@@ -423,7 +505,6 @@ function login(user) {
 		dataType: 'json',
 		success: function (response) {
 			if (response.status === '200') {
-				// 跳转页面
 				$.cookie('token', user.u_name, {
 					expires: 7,
 					path: '/',

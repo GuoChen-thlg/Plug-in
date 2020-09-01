@@ -61,6 +61,8 @@
                 "src/lib/jQuery/jquery.tips.min.js",
                 "src/lib/jQuery/drag.min.js",
                 "src/lib/wx/wxLogin.js",
+                "src/js/util.js",
+                "src/js/datatable.extend.js",
                 "src/js/main.js"
             ],
             "run_at": "document_start"
