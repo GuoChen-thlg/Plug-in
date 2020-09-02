@@ -1,49 +1,9 @@
-const API_URL = ' https://192.168.1.153:443/dev-api'
-
-// 弹窗统一配置
-$.cxDialog.defaults.baseClass = 'ios'
-$.cxDialog.defaults.lockScroll = true
-
-// 提示统一配置
-let tipsInfo = {
-	side: 3,
-	color: '#FFF',
-	bg: '#FF00FF',
-	time: '2',
-}
-/**
- * @description 获得所有 ASIN
- *
- * @returns {Array} Asinlist 返回 页面 所有的 ASIN
- */
-function findAllAsin() {
-	// TODO 整合
-	let asinlist = []
-	let ajax_asin_list = []
-	// 产品列表页
-	let asins = $('[data-asin]')
-	let product_iist_asin = asins.map((i, o) => {
-		if (o.dataset.asin !== '' && o.dataset.asin.length == 10) {
-			return o.dataset.asin
-		}
-	})
-	// 产品详情页
-	document.querySelectorAll('div[data-a-carousel-options]').forEach(o => {
-		if (JSON.parse(o.dataset.aCarouselOptions).ajax) {
-			let arr = JSON.parse(o.dataset.aCarouselOptions).ajax.id_list
-			if (arr && arr.length > 0) {
-				ajax_asin_list = [...ajax_asin_list, ...arr]
-			}
-		}
-	})
-	ajax_asin_list = ajax_asin_list.map(o => o.substr(0, 10))
-	asinlist = new Set([...product_iist_asin, ...ajax_asin_list])
-	return [...asinlist]
-}
+let TRACKLIST=[]//追踪列表
 /**
  * @description 渲染数据表
- *
+ * 
  * @param {Array} asinlist  ASINs
+ * @param {Array} trackList 
  */
 function renderTable(asinlist) {
 	$.log(asinlist.toString())
@@ -85,22 +45,14 @@ function renderTable(asinlist) {
 			data: 'asin',
 			orderable: false,
 			render: (data, type, row) => {
+				let flag = TRACKLIST.indexOf(data) > -1 
 				return `<input type="checkbox" data-multiterm data-asin=${data} ${
-					false ? 'checked' : ''
-				} class=" multiterm product_watch  mx-auto">
+					flag? 'checked' : ''} ${flag?'disabled':''} class=" multiterm product_watch  mx-auto">
 				<input type="checkbox" data-single data-asin=${data} ${
-					false ? 'checked' : ''
+					flag? 'checked' : ''
 				} class=" single product_watch  mx-auto">`
 			},
 		},
-		// {
-		// 	title: '单项追踪',
-		// 	data: 'asin',
-		// 	orderable: false,
-		// 	render: (data, type, row) => {
-		// 		return `<input type="checkbox" data-single data-asin=${data} ${ false ? 'checked' : '' } class=" product_watch d-block mx-auto">`
-		// 	},
-		// },
 		{
 			title: '产品SKU',
 			data: 'asin',
@@ -108,6 +60,8 @@ function renderTable(asinlist) {
 		{
 			title: '产品名称',
 			data: 'name',
+			className: 'product_name',
+			width: '200px',
 			render: (data, type, row) => {
 				// 文字 省略号
 				return `<span class="omit" title="${data}">${data}</span>`
@@ -128,12 +82,20 @@ function renderTable(asinlist) {
 				return `<span class="omit" title="${data}">${data}</span>`
 			},
 		},
-		{ title: '产品价格 ', data: 'price' },
-		{ title: '排名', data: 'bsn' },
-		{ title: '节点排名', data: 'node_ranking' },
-		{ title: '产品评分', data: 'reviews_rating' },
-		{ title: '产品评论数量', data: 'reviews_count' },
-		{ title: '问答数', data: 'q_a' },
+		{ title: '产品价格 ', data: 'price', className: 'product_price' },
+		{ title: '排名', data: 'bsn', className: 'product_bsn' },
+		{ title: '节点排名', data: 'node_ranking', className: 'product_ranking' },
+		{
+			title: '产品评分',
+			data: 'reviews_rating',
+			className: 'product_reviews_rating',
+		},
+		{
+			title: '产品评论数量',
+			data: 'reviews_count',
+			className: 'product_reviews_count',
+		},
+		{ title: '问答数', data: 'q_a', className: 'product_q_a' },
 		{ title: '品牌名', data: 'brand' },
 		{ title: '卖家', data: 'seller_Name' },
 		{ title: '所属大类别', data: 'b_categroy' },
@@ -182,7 +144,7 @@ function renderTable(asinlist) {
 		buttons: [
 			{
 				extend: 'trace',
-				text: '追踪已勾选',
+				text: '追踪已勾选项',
 				className: ' btn-warning btn-trace',
 			},
 			{ extend: 'copy', text: '📋COPY' },
@@ -267,59 +229,54 @@ function renderTable(asinlist) {
 				targets: [0, 1, 2, 3, 4, 11, 12, 13, 14, 16, 17, 18, 21],
 				orderable: false, //是否排序
 			},
+			{
+				targets:[5,6,7,8,9,10],
+				
+			}
 		],
-		data: [
-			{
-				asin: 'S546SADADA',
+		ajax: {
+			// ajax 读取数据
+			type: 'GET',
+			url: `${API_URL}/custom/user/amzproductList/${asinlist.toString()}`,
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
 			},
-			{
-				asin: 'dasdsa554as',
+			dataSrc: 'rows',
+			data: {
+				// 分页使用
+				// pageNum: '',
+				// pageSize:''
 			},
-			{
-				asin: 'asdads45s4a',
+			error: function (XMLHttpRequest, errorinfo, error) {
+				$.cxDialog({
+					title: '提示',
+					info: '该款产品数据维护中...',
+					okText: '✔',
+					ok: () => {
+						close()
+					},
+				})
 			},
-		],
-		// ajax: {
-		// 	// ajax 读取数据
-		// 	type: 'GET',
-		// 	url: `${API_URL}/custom/user/amzproductList/${asinlist.toString()}`,
-		// 	headers: {
-		// 		'Content-Type': 'application/json; charset=utf-8',
-		// 	},
-		// 	dataSrc: 'rows',
-		// 	data: {
-		// 		// 分页使用
-		// 		// pageNum: '',
-		// 		// pageSize:''
-		// 	},
-		// 	error: function (XMLHttpRequest, errorinfo, error) {
-		// 		$.cxDialog({
-		// 			title: '提示',
-		// 			info: '该款产品数据维护中...',
-		// 			okText: '✔',
-		// 			ok: () => {
-		// 				close()
-		// 			},
-		// 		})
-		// 	},
-		// },
+		},
 		columns, // 表头
 		initComplete: function () {
-			// 切换事件绑定
-			$('#customSwitch1').on('click', function () {
-				console.log(this.checked)
-				if (this.checked) {
-					$('button.btn-trace').removeAttr('disabled')
-					$('.multiterm').css('display', 'block')
-					$('.single').css('display', 'none')
-				} else {
-					$('button.btn-trace').attr('disabled', 'disabled')
-					$('.multiterm').css('display', 'none')
-					$('.single').css('display', 'block')
-				}
-			})
+			// 初始化完成
+			// 按钮切换
+			trackSwitch()
+			// 价格
+			trendPrice()
+			// 排名
+			trendBsn()
+			// 节点排名
+			trendRanking()
+			// 产品评分
+			trendRating()
+			// 评论数
+			trendComment()
+			// 问答数
+			trendQ_A()
 			//初始化完成  绑定 点击事件 追踪产品
-			$('input:checkbox[data-single]').click(function (e) {
+			$('input:checkbox[data-single]').click(function () {
 				// e.preventDefault()
 				let data = {
 					checked: this.checked,
@@ -358,7 +315,7 @@ function renderTable(asinlist) {
 				} else {
 					$.ajax({
 						type: 'GET',
-						url: `${API_URL}/custom/user/addtrack?u_name=${$.cookie(
+						url: `${API_URL}/custom/user/deltrack?u_name=${$.cookie(
 							'token'
 						)}&asin=${data.asin}`,
 						headers: {
@@ -368,21 +325,26 @@ function renderTable(asinlist) {
 							$.log(response)
 							if (response.status === 'success') {
 								$('.popup_animation').css('display', 'none')
-								$.hint('取消成功')
+								$.hint('删除成功')
 							} else {
 								$(_this).prop('checked', true)
 								$('.popup_animation').css('display', 'none')
-								$.hint('取消失败')
+								$.hint('删除失败')
 							}
 						},
 						error: function (xhr, status, error) {
 							$.log(status)
 							$(_this).prop('checked', true)
 							$('.popup_animation').css('display', 'none')
-							$.hint('取消失败')
+							$.hint('删除失败')
 						},
 					})
 				}
+				// 重新渲染数据表
+				// queryTracking((trackList) => {
+				//  table.ajax.reload();
+				// 	renderTable([$('#ASIN').val(), ...findAllAsin()])
+				// })
 			})
 		},
 	})
@@ -401,92 +363,7 @@ function renderTable(asinlist) {
 		}
 	})
 }
-/**
- * @description  窗口中事件绑定
- *
- */
-function eventBinding() {
-	let app_root_style = null
-	// 关闭按钮
-	$('#close').on('click', close)
-	// 窗口最大化/还原
-	$('.full-screen-box').on('click', () => {
-		if ($('.full-screen-box>.full').css('display') === 'block') {
-			app_root_style = $('#app-root').attr('style')
-			$('#app-root').css({
-				width: '100%',
-				height: '100%',
-				top: '0',
-				left: '0',
-			})
-			$('.full-screen-box>.full').css('display', 'none')
-			$('.full-screen-box>.small').css('display', 'block')
-		} else {
-			$('#app-root').attr('style', app_root_style)
-			$('.full-screen-box>.full').css('display', 'block')
-			$('.full-screen-box>.small').css('display', 'none')
-		}
-	})
-	// 退出按鈕
-	$('button[type="button"].quit').on('click', () => {
-		$.cxDialog({
-			title: '提示',
-			info: '确认退出该账号吗❓',
-			okText: '✔',
-			ok: function () {
-				close()
-				$.removeCookie('token', { path: '/' })
-			},
-			noText: '❌',
-			no: () => {},
-		})
-	})
-	// 登录按钮
-	$('button[type="button"].login').on('click', () => {
-		// 用户信息
-		let login_user = {
-			u_name: $('#login_admin').val().trim(),
-			u_password: $('#login_password').val().trim(),
-		}
-		if (login_user.u_name == '') {
-			$('#login_admin')
-				.tips({ ...tipsInfo, msg: '请填写账号' })
-				.focus()
-		} else if (login_user.u_password == '') {
-			$('#login_password')
-				.tips({ ...tipsInfo, msg: '请填写密码' })
-				.focus()
-		} else {
-			login(login_user)
-		}
-	})
-	// 注册
-	$('.register').on('click', function (e) {
-		e.preventDefault()
-		open($('.register')[0].href)
-		return false
-	})
-	// 微信登陆
-	// $('.wxlogin').on('click', () => {
-	// 	$('.login_info_box').css('display', 'none')
-	// 	$('.wx_login_box').css('display', 'block')
-	// 	var obj = new WxLogin({
-	// 		self_redirect: true,
-	// 		id: 'wxlogin', //第三方页面显示二维码的容器id
-	// 		appid: 'wxbdc5610cc59c1631',
-	// 		scope: 'snsapi_login',
-	// 		redirect_uri: 'https%3A%2F%2Fpassport.yhd.com%2Fwechat%2Fcallback.do',
-	// 		// state: "",
-	// 		// style: "",
-	// 		// href: "",
-	// 	})
-	// })
-	// // 关闭微信登陆
-	// $('.close').on('click', () => {
-	// 	$('.login_info_box').css('display', 'block')
-	// 	$('.wx_login_box').css('display', 'none')
-	// })
-}
+
 /**
  * 登录
  *
@@ -512,7 +389,10 @@ function login(user) {
 				$('#user_name').text(user.u_name)
 				$('.popup_animation').css('display', 'none')
 				$.log('登录成功，渲染数据表，显示数据表')
-				renderTable([$('#ASIN').val(), ...findAllAsin()])
+				queryTracking((trackList) => {
+					TRACKLIST=trackList
+					renderTable([$('#ASIN').val(), ...findAllAsin()])
+				})
 				$('.main_wrap.login_outer_box').css('display', 'none')
 				$('.main_wrap.data_show_box').css('display', 'block')
 				$('.popup_animation').css('display', 'none')
@@ -540,7 +420,6 @@ function login(user) {
 					info = '错误😅，请稍后重试。'
 					break
 			}
-
 			$.cxDialog({
 				title: '提示',
 				info,
@@ -549,41 +428,13 @@ function login(user) {
 					$('.popup_animation').css('display', 'none')
 				},
 			})
+			$.log(xhr)
+			$.log(status)
 			$.log(error)
 		},
 	})
 }
-/**
- * @description 验证是否已登录
- *
- * @param {Function} callback 已登录 执行回调
- */
-function verifyLogin(callback) {
-	$.log('判断cookie')
-	if ($.cookie('token')) {
-		$('#user_name').text($.cookie('token'))
-		$.cookie('token', $.cookie('token'), {
-			expires: 7,
-			path: '/',
-		})
-		$.log('已登录，执行 verifyLogin 回调方法，显示数据表')
-		$('.main_wrap.login_outer_box').css('display', 'none')
-		$('.main_wrap.data_show_box').css('display', 'block')
-		// 执行回调
-		callback()
-	}
-}
-/**
- * @description 关闭浮动窗口
- *
- */
-function close() {
-	const child = document.querySelector('#app-root')
-	if (child) {
-		const parentnode = child.parentNode
-		parentnode.removeChild(child)
-	}
-}
+
 /**
  * @description 打开浮动窗口
  *
@@ -662,16 +513,6 @@ function floatingWindow(callback) {
 	$.log('#app-root 渲染成功，执行回调')
 	callback()
 }
-let tabUrl = $(location)[0].href // 当前产品 页面URL
-// 页面加载完 执行
-document.addEventListener('DOMContentLoaded', function () {
-	$('#twister li').click(function () {
-		if ($(this)[0].dataset.dpUrl !== '') {
-			// 更新 URL
-			tabUrl = `${$(location)[0].origin}${$(this)[0].dataset.dpUrl}`
-		}
-	})
-})
 
 // 通信 程序开始
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
@@ -687,7 +528,10 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 						verifyLogin(() => {
 							// 已登录 执行回调
 							$.log('渲染数据表')
-							renderTable([$('#ASIN').val(), ...findAllAsin()])
+							queryTracking((trackList) => { 
+								TRACKLIST=trackList
+								renderTable([$('#ASIN').val(), ...findAllAsin()])
+							})
 						})
 					})
 				})

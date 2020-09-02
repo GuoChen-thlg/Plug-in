@@ -62,6 +62,7 @@
                 "src/lib/jQuery/drag.min.js",
                 "src/lib/wx/wxLogin.js",
                 "src/js/util.js",
+                "src/js/function.js",
                 "src/js/datatable.extend.js",
                 "src/js/main.js"
             ],
