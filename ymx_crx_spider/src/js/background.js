@@ -62,9 +62,6 @@ chrome.runtime.onInstalled.addListener(function () {
 					new chrome.declarativeContent.PageStateMatcher({
 						pageUrl: { urlContains: 'amazon' },
 					}),
-					// new chrome.declarativeContent.PageStateMatcher({
-					// 	pageUrl: { urlContains: '/s?' },
-					// }),
 				],
 				actions: [new chrome.declarativeContent.ShowPageAction()],
 			},
@@ -72,8 +69,9 @@ chrome.runtime.onInstalled.addListener(function () {
 	})
 })
 chrome.pageAction.onClicked.addListener(function (tab) {
-	// // 打开悬浮窗
 
+
+	// 打开悬浮窗
 	SendMessageToContent(
 		{
 			type: 'OPEN',

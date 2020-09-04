@@ -22,6 +22,7 @@
         "declarativeContent",
         "storage",
         "notifications"
+
     ],
     "content_scripts": [
         {
@@ -61,7 +62,12 @@
                 "src/lib/jQuery/jquery.tips.min.js",
                 "src/lib/jQuery/drag.min.js",
                 "src/lib/wx/wxLogin.js",
-                "src/js/util.js",
+                "src/lib/highcharts/highcharts.js",
+                "src/lib/highcharts/modules/exporting.js",
+                "src/lib/highcharts/modules/data.js",
+                "src/lib/highcharts/modules/series-label.js",
+                "src/lib/highcharts/modules/oldie.js",
+                "src/lib/highcharts/highcharts-zh_CN.js",
                 "src/js/function.js",
                 "src/js/datatable.extend.js",
                 "src/js/main.js"

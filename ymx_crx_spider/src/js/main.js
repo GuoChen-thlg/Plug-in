@@ -1,12 +1,10 @@
-let TRACKLIST=[]//追踪列表
 /**
  * @description 渲染数据表
- * 
+ *
  * @param {Array} asinlist  ASINs
- * @param {Array} trackList 
+ * @param {Array} trackList
  */
 function renderTable(asinlist) {
-	$.log(asinlist.toString())
 	// 语言配置
 	const zh_ch = {
 		sProcessing: `<div class="spinner-border spinner-border-sm mr-2" role="status"> <span class="sr-only">Loading...</span> </div>处理中...`,
@@ -36,20 +34,21 @@ function renderTable(asinlist) {
 	const columns = [
 		{
 			title: `<div class="custom-control custom-switch">
-			<input type="checkbox" class="custom-control-input"style="display:none" checked id="customSwitch1">
+			<input type="checkbox" class="custom-control-input"style="display:none" id="customSwitch1">
 			<label class="custom-control-label" for="customSwitch1">
-			<span class="multiterm" title="勾选表示要追踪的商品,已勾选表示已追踪的商品" >多项追踪</span>
+			<span class="multiterm"  title="勾选表示要追踪的商品,已勾选表示已追踪的商品" >多项追踪</span>
 			<span class="single" title="追踪单个商品,已勾选表示已追踪的商品,可取消追踪" >单项追踪</span>
 			</label>
 		  </div>`,
 			data: 'asin',
 			orderable: false,
 			render: (data, type, row) => {
-				let flag = TRACKLIST.indexOf(data) > -1 
+				let flag = TRACKLIST.indexOf(data) > -1
 				return `<input type="checkbox" data-multiterm data-asin=${data} ${
-					flag? 'checked' : ''} ${flag?'disabled':''} class=" multiterm product_watch  mx-auto">
+					flag ? 'checked' : ''
+				} ${flag ? 'disabled' : ''} class=" multiterm product_watch  mx-auto">
 				<input type="checkbox" data-single data-asin=${data} ${
-					flag? 'checked' : ''
+					flag ? 'checked' : ''
 				} class=" single product_watch  mx-auto">`
 			},
 		},
@@ -82,20 +81,54 @@ function renderTable(asinlist) {
 				return `<span class="omit" title="${data}">${data}</span>`
 			},
 		},
-		{ title: '产品价格 ', data: 'price', className: 'product_price' },
-		{ title: '排名', data: 'bsn', className: 'product_bsn' },
-		{ title: '节点排名', data: 'node_ranking', className: 'product_ranking' },
+		{
+			title: '产品价格 ',
+			data: 'price',
+			className: 'product_price',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} data-self="" title="点击查看数据趋势变化">${data}</span>`
+			},
+		},
+		{
+			title: '排名',
+			data: 'bsn',
+			className: 'product_bsn',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} title="点击查看数据趋势变化">${data}</span>`
+			},
+		},
+		{
+			title: '节点排名',
+			data: 'node_ranking',
+			className: 'product_ranking',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} title="点击查看数据趋势变化">${data}</span>`
+			},
+		},
 		{
 			title: '产品评分',
 			data: 'reviews_rating',
 			className: 'product_reviews_rating',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} title="点击查看数据趋势变化">${data}</span>`
+			},
 		},
 		{
 			title: '产品评论数量',
 			data: 'reviews_count',
 			className: 'product_reviews_count',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} title="点击查看数据趋势变化">${data}</span>`
+			},
 		},
-		{ title: '问答数', data: 'q_a', className: 'product_q_a' },
+		{
+			title: '问答数',
+			data: 'q_a',
+			className: 'product_q_a',
+			render: (data, type, row) => {
+				return `<span data-asin=${row.asin} title="点击查看数据趋势变化">${data}</span>`
+			},
+		},
 		{ title: '品牌名', data: 'brand' },
 		{ title: '卖家', data: 'seller_Name' },
 		{ title: '所属大类别', data: 'b_categroy' },
@@ -120,10 +153,18 @@ function renderTable(asinlist) {
 		{ title: '父级ASIN', data: 'parernt_asin' },
 		{ title: '库存', data: 'stock' },
 		{ title: '卖家数量', data: 'num_sellers' },
-		{ title: '配送方式', data: 'delivery' },
+		{
+			title: '配送方式',
+			data: 'delivery',
+			render: (data, type, row) => {
+				return data == '' ? 'FBM' : 'FBA'
+			},
+		},
 		{ title: '记录时间', data: 'crawl_time' },
 	]
-	const table = $('#thlg_table_data').DataTable({
+	$.loading(true)
+	$.log('初始化 Table')
+	const table = (TABLE = $('#thlg_table_data').DataTable({
 		language: zh_ch, // 语言配置
 		retrieve: true, // 返回 table 事例
 		autoWidth: true, // 自适应宽度
@@ -229,10 +270,6 @@ function renderTable(asinlist) {
 				targets: [0, 1, 2, 3, 4, 11, 12, 13, 14, 16, 17, 18, 21],
 				orderable: false, //是否排序
 			},
-			{
-				targets:[5,6,7,8,9,10],
-				
-			}
 		],
 		ajax: {
 			// ajax 读取数据
@@ -248,14 +285,17 @@ function renderTable(asinlist) {
 				// pageSize:''
 			},
 			error: function (XMLHttpRequest, errorinfo, error) {
-				$.cxDialog({
-					title: '提示',
-					info: '该款产品数据维护中...',
-					okText: '✔',
-					ok: () => {
-						close()
-					},
-				})
+				$.log(XMLHttpRequest)
+				if (errorinfo === 'error') {
+					$.cxDialog({
+						title: '提示',
+						info: '该款产品数据维护中...',
+						okText: '✔',
+						ok: () => {
+							wicketClose()
+						},
+					})
+				}
 			},
 		},
 		columns, // 表头
@@ -263,91 +303,11 @@ function renderTable(asinlist) {
 			// 初始化完成
 			// 按钮切换
 			trackSwitch()
-			// 价格
-			trendPrice()
-			// 排名
-			trendBsn()
-			// 节点排名
-			trendRanking()
-			// 产品评分
-			trendRating()
-			// 评论数
-			trendComment()
-			// 问答数
-			trendQ_A()
-			//初始化完成  绑定 点击事件 追踪产品
-			$('input:checkbox[data-single]').click(function () {
-				// e.preventDefault()
-				let data = {
-					checked: this.checked,
-					asin: this.attributes['data-asin'].value,
-				}
-				let _this = this
-				$.log(data)
-				$('.popup_animation').css('display', 'block')
-				if (data.checked) {
-					$.ajax({
-						type: 'GET',
-						url: `${API_URL}/custom/user/addtrack?u_name=${$.cookie(
-							'token'
-						)}&asin=${data.asin}`,
-						headers: {
-							'Content-Type': 'application/json; charset=utf-8',
-						},
-						success: function (response) {
-							$.log(response)
-							if (response.status === 'success') {
-								$('.popup_animation').css('display', 'none')
-								$.hint('跟踪成功')
-							} else {
-								$(_this).prop('checked', false)
-								$('.popup_animation').css('display', 'none')
-								$.hint('跟踪失败')
-							}
-						},
-						error: function (xhr, status, error) {
-							$.log(status)
-							$(_this).prop('checked', false)
-							$('.popup_animation').css('display', 'none')
-							$.hint('跟踪失败')
-						},
-					})
-				} else {
-					$.ajax({
-						type: 'GET',
-						url: `${API_URL}/custom/user/deltrack?u_name=${$.cookie(
-							'token'
-						)}&asin=${data.asin}`,
-						headers: {
-							'Content-Type': 'application/json; charset=utf-8',
-						},
-						success: function (response) {
-							$.log(response)
-							if (response.status === 'success') {
-								$('.popup_animation').css('display', 'none')
-								$.hint('删除成功')
-							} else {
-								$(_this).prop('checked', true)
-								$('.popup_animation').css('display', 'none')
-								$.hint('删除失败')
-							}
-						},
-						error: function (xhr, status, error) {
-							$.log(status)
-							$(_this).prop('checked', true)
-							$('.popup_animation').css('display', 'none')
-							$.hint('删除失败')
-						},
-					})
-				}
-				// 重新渲染数据表
-				// queryTracking((trackList) => {
-				//  table.ajax.reload();
-				// 	renderTable([$('#ASIN').val(), ...findAllAsin()])
-				// })
-			})
+			table_init_binding()
+			$.loading(false)
+			$.log('Table 初始化完成')
 		},
-	})
+	}))
 	table.on('xhr', function (e, settings, json) {
 		table.off('xhr') //关闭监听该事件
 		$.log(json)
@@ -357,81 +317,10 @@ function renderTable(asinlist) {
 				info: '该款产品数据维护中...',
 				okText: '✔',
 				ok: () => {
-					close()
+					wicketClose()
 				},
 			})
 		}
-	})
-}
-
-/**
- * 登录
- *
- * @param {obj} user
- */
-function login(user) {
-	// 成功后即可登录
-	$('.popup_animation').css('display', 'block')
-	$.ajax({
-		type: 'POST',
-		url: `${API_URL}/custom/user/loginCus`,
-		headers: {
-			'Content-Type': 'application/json; charset=utf-8',
-		},
-		data: JSON.stringify({ ...user }),
-		dataType: 'json',
-		success: function (response) {
-			if (response.status === '200') {
-				$.cookie('token', user.u_name, {
-					expires: 7,
-					path: '/',
-				})
-				$('#user_name').text(user.u_name)
-				$('.popup_animation').css('display', 'none')
-				$.log('登录成功，渲染数据表，显示数据表')
-				queryTracking((trackList) => {
-					TRACKLIST=trackList
-					renderTable([$('#ASIN').val(), ...findAllAsin()])
-				})
-				$('.main_wrap.login_outer_box').css('display', 'none')
-				$('.main_wrap.data_show_box').css('display', 'block')
-				$('.popup_animation').css('display', 'none')
-			} else {
-				$.cxDialog({
-					title: '提示',
-					info: '账号或密码不正确，登录失败',
-					okText: '✔',
-					ok: () => {
-						$('.popup_animation').css('display', 'none')
-					},
-				})
-			}
-		},
-		error: function (xhr, status, error) {
-			let info = null
-			switch (status) {
-				case 'error':
-					info = '登录失败😅，请稍后重试。'
-					break
-				case 'timeout':
-					info = '请求超时😅，请稍后重试。'
-					break
-				default:
-					info = '错误😅，请稍后重试。'
-					break
-			}
-			$.cxDialog({
-				title: '提示',
-				info,
-				okText: '✔',
-				ok: () => {
-					$('.popup_animation').css('display', 'none')
-				},
-			})
-			$.log(xhr)
-			$.log(status)
-			$.log(error)
-		},
 	})
 }
 
@@ -441,6 +330,7 @@ function login(user) {
  * @param {Function} callback 渲染成功 执行回调
  */
 function floatingWindow(callback) {
+	$.log('开始渲染#app-root')
 	if (findAllAsin().length == 0) {
 		$.cxDialog({
 			title: '提示',
@@ -493,14 +383,13 @@ function floatingWindow(callback) {
 </div>
 <main class="main_wrap data_show_box data_list p-3">
     <div>
-    <span id="user_name"></span> <button type="button" class="btn quit  mb-2 float-right ">退出</button>
+    <span id="user_name"></span><button type="button" class="btn quit  mb-2 float-right ">退出</button><button type="button" id='refresh_data' class="btn  btn-dark mb-2 float-right ">刷新页面</button> 
     </div>
     <table cellpadding="0" cellspacing="0" class=" " id="thlg_table_data"></table>
 </main>`
 	const app = document.createElement('div')
 	app.id = 'app-root'
 	app.innerHTML = html
-	$.log('追加 #app-root')
 	document.querySelector('body').appendChild(app)
 	$('#app-root').bg_move({
 		move: '.title',
@@ -518,24 +407,22 @@ function floatingWindow(callback) {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 	switch (request.type) {
 		case 'OPEN':
-			$.log('判断是否存在#app-root')
-			if (!document.querySelector('#app-root')) {
-				$.log('开始渲染#app-root')
-				$(() => {
+			$(() => {
+				$.log('判断是否存在#app-root')
+				if (!document.querySelector('#app-root')) {
 					floatingWindow(() => {
 						// 判断登录
-						$.log('判断登录')
 						verifyLogin(() => {
 							// 已登录 执行回调
-							$.log('渲染数据表')
-							queryTracking((trackList) => { 
-								TRACKLIST=trackList
+							$.loading(true)
+							queryTracking(trackList => {
+								TRACKLIST = trackList
 								renderTable([$('#ASIN').val(), ...findAllAsin()])
 							})
 						})
 					})
-				})
-			}
+				}
+			})
 			break
 		default:
 			sendResponse({

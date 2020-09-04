@@ -78,10 +78,10 @@ table.dataTable {
 	td.product_reviews_rating,
 	td.product_reviews_count,
 	td.product_q_a {
-	color: #F57706;
-	&:hover{
-		text-decoration: underline;
-	}
+		color: #f57706;
+		&:hover {
+			text-decoration: underline;
+		}
 	}
 }
 #thlg_table_data_wrapper {
@@ -131,10 +131,10 @@ table.dataTable {
 		width: 50px;
 	}
 	.multiterm {
-		display: block;
+		display: none;
 	}
 	.single {
-		display: none;
+		display: block;
 	}
 }
 main.main_wrap.data_list {
@@ -163,7 +163,7 @@ main.main_wrap.data_list {
 	z-index: 9999;
 	background-color: #f9f9f9;
 	min-width: 680px;
-	min-height: 300px;
+	min-height: 400px;
 	width: 800px;
 	height: 500px;
 	left: 15%;
@@ -217,5 +217,34 @@ main.main_wrap.data_list {
 		.pagination li {
 			list-style: none;
 		}
+	}
+}
+#LineChart_box {
+	position: fixed;
+	display: block;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.3);
+	width: 100vw !important;
+	height: 100vh !important;
+	z-index: 0;
+	li {
+		list-style: none;
+	}
+	.LineChart_outer {
+		position: absolute;
+		left: 30px;
+		top: 30px;
+		z-index: 99;
+		background-color: #fff;
+		min-width: 400px;
+		min-height: 400px;
+		width: 600px;
+		height: 400px;
+	}
+	.bg_change_size {
+		display: none !important;
 	}
 }
